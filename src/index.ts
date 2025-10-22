@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
+import path from 'path';
 import todoRoutes from './routes/todo';
 
 const app = express();
@@ -9,8 +10,14 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Routes
-app.get('/', (req: Request, res: Response) => {
+// Serve static files from public directory
+app.use(express.static(path.join(__dirname, '../public')));
+
+// API Routes
+app.use('/api', todoRoutes);
+
+// API info endpoint
+app.get('/api', (req: Request, res: Response) => {
   res.json({
     message: 'Todo API Server',
     version: '1.0.0',
@@ -19,8 +26,6 @@ app.get('/', (req: Request, res: Response) => {
     }
   });
 });
-
-app.use('/api', todoRoutes);
 
 // Start server only if not in Vercel environment
 if (process.env.VERCEL !== '1') {

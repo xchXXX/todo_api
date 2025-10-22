@@ -28,11 +28,31 @@ export const createTodo = (data: CreateTodoDto): Todo => {
 };
 
 export const updateTodo = (id: string, data: UpdateTodoDto): Todo | undefined => {
-  throw new Error('Not implemented');
+  const todoIndex = todos.findIndex(todo => todo.id === id);
+
+  if (todoIndex === -1) {
+    return undefined;
+  }
+
+  const updatedTodo: Todo = {
+    ...todos[todoIndex],
+    ...data,
+    updatedAt: new Date(),
+  };
+
+  todos = [
+    ...todos.slice(0, todoIndex),
+    updatedTodo,
+    ...todos.slice(todoIndex + 1),
+  ];
+
+  return updatedTodo;
 };
 
 export const deleteTodo = (id: string): boolean => {
-  throw new Error('Not implemented');
+  const initialLength = todos.length;
+  todos = todos.filter(todo => todo.id !== id);
+  return todos.length < initialLength;
 };
 
 export const clearAllTodos = (): void => {
